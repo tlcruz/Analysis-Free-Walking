@@ -1,17 +1,17 @@
 function [Flies] = GetRawDataUniS(protocol, path, pathSave, seq, iOr, name)
-%% Load Data
+% Load Data
 Flies.Protocol = protocol;
 Flies.Seq = seq;
 Flies.Type = name;
 T = readtable(path, 'Delimiter',' ','ReadVariableNames',false);
-disp(path);
-%% Divide Data Into Protocol
+% Divide Data Into Protocol
 startI = [];
 endI = [];
 Framei1 = T.Var1(1);
 Framei2 = T.Var3(1);
 FrameC1 = T.Var1-Framei1+1;
 FrameC2 = T.Var3-Framei2+1;
+
 for k = 1 : length(protocol)-1
     if protocol(k) < max(FrameC1)
         auxStart = find(FrameC1 == protocol(k));
@@ -27,7 +27,7 @@ for k = 1 : length(protocol)-1
         endI = vertcat(endI, []);
     end
 end
-%% Get Tracking Traces
+% Get Tracking Traces
 Angle = T.Var7(1:endI(end));
 X = -80*(T.Var6(1:endI(end))+0.9)/9;
 Y = 80*T.Var5(1:endI(end))/9;
@@ -50,16 +50,17 @@ while (nJ ~= nJb)
     [VfRaw, VsRaw, VrRaw, VtRaw, Angle, nJ, flp] = ClearJumps(VfRaw, VsRaw, VrRaw, VtRaw, Angle, flp, iOr);
 end
 flp = vertcat(flp, flp(end));
-%% Smooth Data
+% Smooth Data
 nPoints = 6;
 Vr = smooth(vertcat(VrRaw,0), nPoints/length(VrRaw), 'lowess');
 Vf = smooth(vertcat(VfRaw,0), nPoints/length(VfRaw), 'lowess');
 Vt = smooth(vertcat(VtRaw,0), nPoints/length(VtRaw), 'lowess');
 Vs = smooth(vertcat(VsRaw,0), nPoints/length(VsRaw), 'lowess');
 
-%% Divide the data into protocol parts and bouts
+% Divide the data into protocol parts and bouts
 Flies.Data = cell(length(startI), 1);
 Flies.Paths = cell(length(startI), 1);
+percWalk = 0;
 for k = 1 : length(startI)
     Flies.Data{k}.Vf = Vf(startI(k):endI(k));
     Flies.Data{k}.Vr = Vr(startI(k):endI(k));
@@ -80,7 +81,8 @@ for k = 1 : length(startI)
     Flies.Data{k}.StartBoutC2 = zeros(size(Flies.Data{k}.Bouts,1),1);
     Flies.Data{k}.EndBoutC2 = zeros(size(Flies.Data{k}.Bouts,1),1);
     for n = 1 : size(Flies.Data{k}.Bouts,1)
-        if length(Flies.Data{k}.Bouts{n}) > 3*60 && ...
+        percWalk = percWalk + length(Flies.Data{k}.Bouts{n});
+        if length(Flies.Data{k}.Bouts{n}) > 0*60 && ...
                 mean(Flies.Data{k}.Vf(Flies.Data{k}.Bouts{n})) < 0
             Flies.Data{k}.flp(Flies.Data{k}.Bouts{n}) = 180;
             Flies.Data{k}.Vf(Flies.Data{k}.Bouts{n}) = -Flies.Data{k}.Vf(Flies.Data{k}.Bouts{n});
@@ -104,14 +106,12 @@ for k = 1 : length(startI)
             Flies.Data{k}.StartBoutC2(n) = Flies.Data{k}.FramesC2(Flies.Data{k}.StartBoutExt(n));
         end
     end
-%     if nargin > 2
-%         mkdir([pathSave 'p' num2str(k)])
-%         dP = Flies.Data{k};
-%         Flies.Paths{k} = [pathSave 'p' num2str(k) '\'];
-%         save([Flies.Paths{k} num2str(k) '.mat'], 'dP');
-%     end
+
 end
+percWalk = percWalk / protocol(end);
+Flies.percWalk = percWalk;
 if nargin > 2
+    disp(num2str(percWalk))
    save([pathSave '\DataLowRes.mat'], 'Flies'); 
 end
 
