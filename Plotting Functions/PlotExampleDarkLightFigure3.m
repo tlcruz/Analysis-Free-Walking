@@ -1,4 +1,5 @@
 %% Raw Examples - Requires saccade segmenter
+addpath('Saccade Segmenter')
 clear
 clc
 % Load the data in dark conditions
