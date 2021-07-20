@@ -1,3 +1,4 @@
+%% function to extract leg movement paramenters in a sequence of two steps
 function stepPars = GetStepParameters(Leg1Y, Leg2Y, Leg1X, Leg2X, VR, VF, Time)
 maxStepSize = 130;
 minSwingSize = 2;
@@ -6,6 +7,7 @@ minStanceSize = 2;
 maxStanceSize = 14;
 peakProminence = 40;
 
+% find transitions to stance or swing phase
 [~, indSwingL1] = findpeaks(Leg1Y, 'MinPeakProminence', peakProminence);
 [~, indStanceL1] = findpeaks(-Leg1Y, 'MinPeakProminence', peakProminence);
 [~, indSwingL2] = findpeaks(Leg2Y, 'MinPeakProminence', peakProminence);

@@ -3,10 +3,9 @@
 clear
 clc
 path = 'D:\Dropbox\Dropbox (Sensorimotor)\ChiappeLabNew\DATA\TOMÁS\Free Walking VR\Data\LegTracking\Dark\';
-
+% load leg movements during forward runs 
 params = GetParams();
 [LegMovForwSegD, pTypesD] = GetLegMovForwSeg(path, params);
-
 thr = 0.02;
 vrcnt = [-5000 5000];
 
@@ -49,14 +48,13 @@ for j = 1 : 1 : size(LegMovForwSegD, 1)
     end
 end
 
-
+% plot angular deviations vs correlated leg placement
 figure,
 hold on
 step = 0.003;
 auxCents = -0.03:step:0.06;
 aux = 1;
 cmap = hot(5);
-
 kk = [];
 nn = [];
 for n = 1 : size(LLp1,1)
@@ -87,7 +85,6 @@ for k = 1 : length(auxCents)-1
         sem(k) = nan;
     end
 end
-%    subplot(1, 4, aux)
 hold on
 plot([-0.05 0.05], [0 0], '--g')
 plot([0 0], [-10 5], '--m')
@@ -95,7 +92,6 @@ plot(auxCents(1:(end-1)), (gm), 'color', cmap(aux,:), 'linewidth', 3)
 plot(auxCents(1:(end-1)), (gm+sem), 'color', cmap(aux,:), 'linewidth', 1)
 plot(auxCents(1:(end-1)), (gm-sem), 'color', cmap(aux,:), 'linewidth', 1)
 title(pTypes{j})
-
 xlabel('<Lxi*Lxi+1>')
 ylabel('Signed Corrected Vr (º/s)')
 axis([-0.03 0.04 -10 10])
