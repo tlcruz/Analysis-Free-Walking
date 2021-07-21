@@ -5,7 +5,7 @@ clc
 path = '\';
 params = GetParams();
 [LegMovForwSeg, pTypes] = GetForwSegLegData(path, params);
-
+%%
 thr = 0.02;
 DeltaStFL = cell(size(LegMovForwSeg, 1),size(LegMovForwSeg, 2));
 DeltaStSCL = cell(size(LegMovForwSeg, 1),size(LegMovForwSeg, 2));
@@ -15,16 +15,15 @@ DeltaSwFL = cell(size(LegMovForwSeg, 1),size(LegMovForwSeg, 2));
 DeltaSwSCL = cell(size(LegMovForwSeg, 1),size(LegMovForwSeg, 2));
 DeltaSwFR = cell(size(LegMovForwSeg, 1),size(LegMovForwSeg, 2));
 DeltaSwSCR = cell(size(LegMovForwSeg, 1),size(LegMovForwSeg, 2));
+
 DeltaFL = cell(size(LegMovForwSeg, 1),size(LegMovForwSeg, 2));
 DeltaSCL = cell(size(LegMovForwSeg, 1),size(LegMovForwSeg, 2));
 DeltaFR = cell(size(LegMovForwSeg, 1),size(LegMovForwSeg, 2));
 DeltaSCR = cell(size(LegMovForwSeg, 1),size(LegMovForwSeg, 2));
 for j = 1 : 1 : size(LegMovForwSeg, 1)
     for n = 1 : size(LegMovForwSeg, 2)
-        % clean the leg position traces
         [lD] = GetCleanLegData(LegMovForwSeg{j,n}, thr);
         for i = 1 : length(lD.VR)
-            % get the parameters of the triangle in stance at each step
             [TrSt, TrSw] = GetStepTriangle(lD.FLLY{i}, lD.FRLY{i}, lD.MLLY{i}, lD.MRLY{i}, lD.HLLY{i}, ...
                 lD.HRLY{i}, lD.FLLX{i}, lD.FRLX{i}, lD.MLLX{i}, lD.MRLX{i}, lD.HLLX{i}, lD.HRLX{i}, lD.ThX{i}, lD.ThY{i});
             for t = 1 : size(TrSt.Tr1X,2)
@@ -50,8 +49,7 @@ for j = 1 : 1 : size(LegMovForwSeg, 1)
         end
     end
 end
-% plot the changes in the center of stability as a function of the changes
-% in lateral leg placement
+
 figure,
 hold on
 step = 5;

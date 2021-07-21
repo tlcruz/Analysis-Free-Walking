@@ -27,17 +27,23 @@ for j = 1 : 1 : size(LegMovForwSegD, 1)
         stepT = [];
         for i = 1 : length(lD.VR)
             if ~isempty(lD.FLLY{i}) && ~isempty(lD.FRLY{i})
+                % get step parameters from the high quality steps
                 stepPars1 = GetStepParameters(lD.FLLY{i}, lD.FRLY{i}, lD.FLLX{i}, lD.FRLX{i}, lD.VR{i}, lD.VF{i}, lD.Time{i});
                 for k = 1 : length(stepPars1.MVRL1)
                     if  sign(stepPars1.L1SwingLateral(k)) > 0
+                        % save the correlated lateral placement and the
+                        % angular deviations
                         LLp1{n2} = vertcat(LLp1{n2}, stepPars1.L1SwingLateral(k)*stepPars1.L2SwingLateral(k));
                         StepTs{n2} = vertcat(StepTs{n2}, stepPars1.StepTime(k));
                         VRLp1{n2} = vertcat(VRLp1{n2}, -(stepPars1.MVRL1(k)+stepPars1.MVRL2(k))/2);
                     end
                 end
+                % get step parameters from the high quality steps
                 stepPars2 = GetStepParameters(lD.FRLY{i}, lD.FLLY{i}, lD.FRLX{i}, lD.FLLX{i}, lD.VR{i}, lD.VF{i},lD.Time{i});
                 for k = 1 : length(stepPars2.MVRL1)
                     if  sign(stepPars2.L1SwingLateral(k)) > 0
+                        % save the correlated lateral placement and the
+                        % angular deviations
                         LLp1{n2} = vertcat(LLp1{n2}, stepPars2.L1SwingLateral(k)*stepPars2.L2SwingLateral(k));
                         VRLp1{n2} = vertcat(VRLp1{n2}, -(stepPars2.MVRL1(k)+stepPars2.MVRL2(k))/2);
                         StepTs{n2} = vertcat(StepTs{n2}, stepPars2.StepTime(k));

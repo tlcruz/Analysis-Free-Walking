@@ -4,7 +4,7 @@ function [TrSt, TrSw, indSt1, indSt2] = GetStepTriangle(FLLY, FRLY, MLLY, MRLY, 
 indSt1 = [];
 indSt2 = [];
 if ~isempty(FLLY)
-    
+    % get the swing and stance movements for all the 6 legs
     indsStace = cell(6,1);
     indsSwing = cell(6,1);
     [indsStace{1}, indsSwing{1}] = GetLegMovStepPars(FLLY);
@@ -92,6 +92,7 @@ if ~isempty(FLLY)
         end
     end
     
+    % detect swing triangles
     TrSw1Y = [];
     TrSw1X = [];
     cTrSw1Y = [];
